@@ -11,8 +11,7 @@ def ppi(channel, message, username):
 
 def pbot(message, channel=''):
     if channel: 
-        msg = '[%s %s] <%s> %s' % (time.strftime('%H:%M
-		:%S', time.gmtime()), channel, 'BOT', message)
+        msg = '[%s %s] <%s> %s' % (time.strftime('%H:%M:%S', time.gmtime()), channel, 'BOT', message)
     else: 
         msg = '[%s] <%s> %s' % (time.strftime('%H:%M:%S', time.gmtime()), 'BOT', message)
 

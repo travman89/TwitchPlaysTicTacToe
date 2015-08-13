@@ -21,7 +21,7 @@ class Irc:
 
         sock.settimeout(10)
 
-        username = self.config['account']['username'].lower()h
+        username = self.config['account']['username'].lower()
         password = self.config['account']['password']
 
         server = self.config['irc']['server']

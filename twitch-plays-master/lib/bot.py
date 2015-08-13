@@ -25,8 +25,8 @@ class Bot:
         self.BLACK = (0,0,0)
         self.WHITE = (255,255,255)
         self.start = time.clock()
-        self.time_played = 0
         self.game_timer = 0
+        self.old_time = 0;
         self.xwins = 0
         self.owins = 0
         self.cats_games = 0
@@ -202,6 +202,7 @@ class Bot:
     def reset_game(self):
         self.game_tracker = [0,0,0,0,0,0,0,0,0]
         self.game_timer = time.clock()
+        self.old_time = 0
         self.suspend = 0
         self.who_starts += 1
         self.whos_move = self.who_starts%2
@@ -255,10 +256,11 @@ class Bot:
             return self.choose_random_move()
         else:
             user_move = self.choose_user_move()
-            print user_move
+       #     print user_move
             return user_move
 			
     def make_move(self):
+        print "make move"
         if self.winner == True or self.is_cats == True:
             self.games+=1
             self.reset_game()
@@ -283,7 +285,6 @@ class Bot:
                 else:
                     self.xwins+=1
             else:
-                print "CATS"
                 self.is_cats = True
                 self.cats_games+=1
 				
@@ -302,18 +303,20 @@ class Bot:
 		#
         self.reset_game()
         #self.music.play(-1)
-		
+
         while True:
-            self.time_played = int(time.clock()-self.start)
            # self.draw_game()
-            timer = int(time.clock() - self.game_timer)
-            if timer > 0 and timer%1 == 0:
-                self.draw_game()
-			# every 10 seconds make a move and check for a win
-            if timer > 0 and timer%2 == 0:
-                
-                self.make_move()
-                self.alternate_turn()
+            timer = time.clock() - self.game_timer
+            print timer-self.old_time
+            if((timer-self.old_time)>.90):
+                self.old_time = timer
+                timer = int(timer)
+                if timer > 0 and timer%1 == 0:
+                    self.draw_game()
+                # every 10 seconds make a move and check for a win
+                if timer > 0 and timer%2 == 0:
+                    self.make_move()
+                    self.alternate_turn()
 				
             new_messages = None
             new_messages = self.irc.recv_messages(1024)   
@@ -321,9 +324,9 @@ class Bot:
                 for message in new_messages: 		
                     button = message['message'].lower()
                     username = message['username'].lower()
-                    print username + " " + button
+               #     print username + " " + button
                     if self.game.is_valid_button(button): 
-                        print button
+                #        print button
                         self.message_buffer.append(button)
                         self.chat_buffer.append(str(username + ': ' + button))
                 self.get_scrolling_chat()
