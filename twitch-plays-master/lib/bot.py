@@ -227,8 +227,10 @@ class Bot:
             counter+=1
         return templist
 		
+        #TODO fix allows user selected move to overwrite filled in spaces.
     def choose_user_move(self):       
         valid_moves = self.get_valid_moves()
+        print valid_moves
         templist = [0,0,0,0,0,0,0,0,0]
         for item in self.message_buffer:
             if int(item) in valid_moves:
@@ -242,10 +244,11 @@ class Bot:
         moves_choices = []
         counter = 0
         for item in templist:
-            if item == max_votes:
+            if item == max_votes and max_votes>0:
                 moves_choices.append(counter)
             counter+=1
         self.reset_message_buffer()
+        print moves_choices
         if len(moves_choices) == 0:		
             return self.choose_random_move()
         else:
@@ -253,14 +256,16 @@ class Bot:
 		
     def choose_move(self):
         if len(self.message_buffer) == 0:
-            return self.choose_random_move()
+            random_move = self.choose_random_move()
+            print("random move")
+            print random_move
+            return random_move
         else:
             user_move = self.choose_user_move()
        #     print user_move
             return user_move
 			
     def make_move(self):
-        print "make move"
         if self.winner == True or self.is_cats == True:
             self.games+=1
             self.reset_game()
@@ -307,14 +312,13 @@ class Bot:
         while True:
            # self.draw_game()
             timer = time.clock() - self.game_timer
-            print timer-self.old_time
             if((timer-self.old_time)>.90):
                 self.old_time = timer
                 timer = int(timer)
-                if timer > 0 and timer%1 == 0:
-                    self.draw_game()
+ #
+                self.draw_game()
                 # every 10 seconds make a move and check for a win
-                if timer > 0 and timer%2 == 0:
+                if timer > 0 and timer%3 == 0:
                     self.make_move()
                     self.alternate_turn()
 				
